@@ -1,10 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const { fdir } = require('fdir');
+const logUpdate = require('log-update');
+const chalk = require('chalk');
 
 // const ftp = '//slcprodftp01/ftp/';
-const ftp = './';
-const regEx = new RegExp(/(\\||\/)archive/);
+const ftp = '//slcbartender01/PrintToBartender';
+const regEx = new RegExp(/archive$/i);
 
 const months = [
   'January',
@@ -21,6 +23,8 @@ const months = [
   'December',
 ];
 
+console.log('Begining Archive Process');
+
 const crawler = new fdir().withBasePath().withDirs().withMaxDepth(4);
 const archives = crawler
   .crawl(ftp)
@@ -29,14 +33,19 @@ const archives = crawler
     return path.match(regEx);
   });
 
-archives.forEach((archive) => {
+console.log(chalk.cyan(`got ${archives.length} archive folders`));
+
+archives.forEach((archive, i) => {
   //only act on folders, where the folder containes files
   //filter to folders
   let files = fs.readdirSync(archive, { withFileTypes: true }).filter((file) => file.isFile());
+  console.log(chalk.cyan(`found ${files.length} in archive ${i + 1} folder`));
   //limit to folders with files
   if (files.length == 0) return;
   //identify file dates
-  let fileStats = files.map((file) => {
+  console.log('Getting File Stats...');
+  let fileStats = files.map((file, i) => {
+    logUpdate(`Reading file: ${i}`);
     let stat = fs.statSync(path.join(archive, file.name));
     let date = {
       day: stat.ctime.getDate().toString(),
@@ -45,6 +54,8 @@ archives.forEach((archive) => {
     };
     return { file, stat, date };
   });
+  console.log('Got File Stats');
+  console.log('Reducing Dates...');
   let dates = fileStats.reduce((dates, file, i, stats) => {
     const { date } = file;
     prevDate = dates.find((d) => {
@@ -56,26 +67,34 @@ archives.forEach((archive) => {
     return dates;
   }, []);
   //create file date folders if not exists
+  console.log('checking for date folders');
   dates.forEach((date) => {
     let year = path.join(archive, date.year);
     let month = path.join(archive, date.year, date.month);
     let day = path.join(archive, date.year, date.month, date.day);
     if (!fs.existsSync(year)) {
       fs.mkdirSync(year);
+      console.log(chalk.red(`creating folder ${year}`));
     }
     if (!fs.existsSync(month)) {
       fs.mkdirSync(month);
+      console.log(chalk.yellow(`creating folder ${month}`));
     }
     if (!fs.existsSync(day)) {
       fs.mkdirSync(day);
+      console.log(chalk.green(`creating folder ${day}`));
     }
   });
   //move each file to the proper archive folder
-  fileStats.forEach((fileStat) => {
+  console.log('Begining File Move...');
+
+  fileStats.forEach((fileStat, i) => {
+    logUpdate(`Moving File: ${i}`);
     let { file, date, stat } = fileStat;
     fs.renameSync(
       path.join(archive, file.name),
       path.join(archive, date.year, date.month, date.day, file.name)
     );
   });
+  console.log('Finished File Move');
 });
