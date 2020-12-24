@@ -3,7 +3,7 @@ const path = require('path');
 const { fdir } = require('fdir');
 const logUpdate = require('log-update');
 const chalk = require('chalk');
-
+require('log-timestamp')('ARCHIVIST');
 // const ftp = '//slcprodftp01/ftp/';
 const ftp = '//slcbartender01/PrintToBartender';
 const regEx = new RegExp(/archive$/i);

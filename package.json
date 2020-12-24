@@ -12,6 +12,7 @@
   "dependencies": {
     "chalk": "^4.1.0",
     "fdir": "^4.1.0",
+    "log-timestamp": "^0.3.0",
     "log-update": "^4.0.0"
   }
 }
