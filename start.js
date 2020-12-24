@@ -5,8 +5,8 @@ const logUpdate = require('log-update');
 const chalk = require('chalk');
 require('log-timestamp')('ARCHIVIST');
 // const ftp = '//slcprodftp01/ftp/';
-const ftp = '//slcbartender01/PrintToBartender';
-const regEx = new RegExp(/archive$/i);
+const ftp = process.env.target;
+const regEx = new RegExp(/archive$/);
 
 const months = [
   'January',
@@ -37,9 +37,14 @@ console.log(chalk.cyan(`got ${archives.length} archive folders`));
 
 archives.forEach((archive, i) => {
   //only act on folders, where the folder containes files
+  console.log('forEach');
   //filter to folders
+  console.log('archive');
+  console.log(archive);
+
   let files = fs.readdirSync(archive, { withFileTypes: true }).filter((file) => file.isFile());
   console.log(chalk.cyan(`found ${files.length} in archive ${i + 1} folder`));
+
   //limit to folders with files
   if (files.length == 0) return;
   //identify file dates
