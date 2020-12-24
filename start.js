@@ -3,8 +3,11 @@ const path = require('path');
 const { fdir } = require('fdir');
 
 // const ftp = '//slcprodftp01/ftp/';
-const ftp = './';
-const regEx = new RegExp(/(\\||\/)archive/);
+// const ftp = '/app';
+// const ftp = './';
+// const regEx = new RegExp(/archive$/);
+const ftp = process.env.target;
+const regEx = new RegExp(/archive$/);
 
 const months = [
   'January',
@@ -31,8 +34,15 @@ const archives = crawler
 
 archives.forEach((archive) => {
   //only act on folders, where the folder containes files
+  console.log('forEach');
   //filter to folders
+  console.log('archive');
+  console.log(archive);
+
   let files = fs.readdirSync(archive, { withFileTypes: true }).filter((file) => file.isFile());
+  console.log('files');
+  console.log(files);
+
   //limit to folders with files
   if (files.length == 0) return;
   //identify file dates
@@ -78,4 +88,5 @@ archives.forEach((archive) => {
       path.join(archive, date.year, date.month, date.day, file.name)
     );
   });
+  // console.log(fileStats);
 });
