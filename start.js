@@ -5,7 +5,10 @@ const logUpdate = require('log-update');
 const chalk = require('chalk');
 require('log-timestamp')('ARCHIVIST');
 // const ftp = '//slcprodftp01/ftp/';
-const ftp = process.env.target;
+// const ftp = '/app';
+// const ftp = './';
+// const regEx = new RegExp(/archive$/);
+const ftp = process.env.target || '/target';
 const regEx = new RegExp(/archive$/);
 
 const months = [
