@@ -6,7 +6,7 @@ const { fdir } = require('fdir');
 // const ftp = '/app';
 // const ftp = './';
 // const regEx = new RegExp(/archive$/);
-const ftp = process.env.target;
+const ftp = process.env.target || '/target';
 const regEx = new RegExp(/archive$/);
 
 const months = [
