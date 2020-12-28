@@ -11,4 +11,4 @@ COPY ./package-lock.json package-lock.json
 
 RUN npm ci
 
-CMD [ "node", 'start.js' ]
+CMD [ "node start.js" ]
