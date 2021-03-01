@@ -8,7 +8,8 @@ require('log-timestamp')('ARCHIVIST');
 // const ftp = '/app';
 // const ftp = './';
 // const regEx = new RegExp(/archive$/);
-const ftp = process.env.target || '/target';
+// const ftp = process.env.target || '/target';
+const ftp = process.env.target || '\\\\slcprodftp01\\ftp\\\\FreshlyPickedWholesale\\';
 const regEx = new RegExp(/archive$/);
 
 const months = [
@@ -56,9 +57,9 @@ archives.forEach((archive, i) => {
     logUpdate(`Reading file: ${i}`);
     let stat = fs.statSync(path.join(archive, file.name));
     let date = {
-      day: stat.ctime.getDate().toString(),
-      month: months[stat.ctime.getMonth()],
-      year: stat.ctime.getFullYear().toString(),
+      day: stat.birthtime.getDate().toString(),
+      month: months[stat.birthtime.getMonth()],
+      year: stat.birthtime.getFullYear().toString(),
     };
     return { file, stat, date };
   });
