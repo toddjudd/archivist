@@ -9,7 +9,7 @@ require('log-timestamp')('ARCHIVIST');
 // const ftp = './';
 // const regEx = new RegExp(/archive$/);
 // const ftp = process.env.target || '/target';
-const ftp = process.env.target || '\\\\slcprodftp01\\ftp\\\\FreshlyPickedWholesale\\';
+const ftp = process.env.target || '\\\\slcbartender01\\printToBartender';
 const regEx = new RegExp(/archive$/);
 
 const months = [
@@ -46,7 +46,9 @@ archives.forEach((archive, i) => {
   console.log('archive');
   console.log(archive);
 
-  let files = fs.readdirSync(archive, { withFileTypes: true }).filter((file) => file.isFile());
+  let files = fs
+    .readdirSync(archive, { withFileTypes: true })
+    .filter((file) => file.isFile());
   console.log(chalk.cyan(`found ${files.length} in archive ${i + 1} folder`));
 
   //limit to folders with files
@@ -68,7 +70,9 @@ archives.forEach((archive, i) => {
   let dates = fileStats.reduce((dates, file, i, stats) => {
     const { date } = file;
     prevDate = dates.find((d) => {
-      return d.day === date.day && d.month === date.month && d.year === date.year;
+      return (
+        d.day === date.day && d.month === date.month && d.year === date.year
+      );
     });
     if (prevDate) return dates;
 
